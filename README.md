@@ -38,13 +38,11 @@ Checkout `./nootebooks/encode.ipynb` and `./notebooks/decode.ipynb` for an examp
 
 Checkout `./notebooks/gpt.ipynb` for an example of how to use a pretrained GPT model to imagine future frames.
 
+https://github.com/commaai/commavq/assets/29985433/91894bf7-592b-4204-b3f2-3e805984045c
 
-https://github.com/commaai/commavq/assets/29985433/b82ffe0d-dd31-475b-b493-4dc73544c0c7
+https://github.com/commaai/commavq/assets/29985433/3a799ac8-781e-461c-bf14-c15cea42b985
 
-https://github.com/commaai/commavq/assets/29985433/8923d120-3cac-4239-9a80-9504c2654f36
-
-https://github.com/commaai/commavq/assets/29985433/8a8fb11d-82d9-4403-9957-f9c132f36f5b
-
+https://github.com/commaai/commavq/assets/29985433/f6f7699b-b6cb-4f9c-80c9-8e00d75fbfae
 
 
 ## References
