@@ -38,5 +38,4 @@ def map_state_dict(state_dict):
   }
 
   state_dict = {key_map.get(k, k): v for k, v in state_dict.items()}
-  state_dict = {k:v for k,v in state_dict.items() if not k.endswith('.attn.bias')} # discard this mask / buffer, not a param
   return state_dict
