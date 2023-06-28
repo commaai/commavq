@@ -12,11 +12,11 @@ num_proc = 40
 num_proc_load_dataset = num_proc
 
 # because nanoGPT datasets are flat arrays of tokens
-# we use this token to separate segments
-# note that the gptM only trained on tokens from the same segment and doesn't have an EOT_TOKEN
-EOT_TOKEN = 1025
 # we use this token to separate frames
 BOS_TOKEN = 1024
+# we use this token to separate segments
+# note that the gpt2m is only trained on tokens from the same segment and doesn't have an EOT_TOKEN
+EOT_TOKEN = 1025
 
 if __name__ == '__main__':
 
