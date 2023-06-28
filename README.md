@@ -3,8 +3,8 @@ commaVQ is a dataset of 100,000 heavily compressed driving videos for Machine Le
 
 ## 2x$500 Challenges!
 
-- Get 1.92 cross entropy loss or less in the val set and in our private val set (using ./notebooks/eval.ipynb). gpt2m trained on a larger dataset gets 2.02 cross entropy loss.
-- Make gpt2m.onnx run at 0.9 sec/frame or less on a consumer GPU (e.g. NVIDIA 3090) witout degredation in cross entropy loss. The current implementation runs at 1.5 sec/frame with kvcaching and float16.
+- Get 1.92 cross entropy loss or less in the val set and in our private val set (using `./notebooks/eval.ipynb`). gpt2m trained on a larger dataset gets 2.02 cross entropy loss.
+- Make gpt2m.onnx run at 0.9 sec/frame or less on a consumer GPU (e.g. NVIDIA 3090) without degredation in cross entropy loss. The current implementation runs at 1.5 sec/frame with kvcaching and float16.
 
 ## Overview
 A VQ-VAE [1,2] was used to heavily compress each frame into 128 "tokens" of 10 bits each. Each entry of the dataset is a "segment" of compressed driving video, i.e. 1min of frames at 20 FPS. Each file is of shape 1200x8x16 and saved as int16.
@@ -28,19 +28,20 @@ tokens = np.load(ds['0'][0]['path']) # first segment from the first data shard
 
 ## Models
 In ./models/ you will find 3 Neural Networks saved in the onnx format
-- ./models/encoder.onnx: is the encoder used to compress the frames
-- ./models/decoder.onnx: is the decoder used to decompress the frames
-- ./models/gtp2m.onnx: a 300M parameter GPT trained on a larger version of this dataset
-- (experimental) ./models/temporal_decoder.onnx: a temporal decoder which is a stateful version of the vanilla decoder
+- `./models/encoder.onnx`: is the encoder used to compress the frames
+- `./models/decoder.onnx`: is the decoder used to decompress the frames
+- `./models/gtp2m.onnx`: a 300M parameter GPT trained on a larger version of this dataset
+- (experimental) `./models/temporal_decoder.onnx`: a temporal decoder which is a stateful version of the vanilla decoder
 
 ## Examples
-Checkout ./nootebooks/encode.ipynb and ./notebooks/decode.ipynb for an example of how to visualize the dataset using a segment of driving video from [comma's drive to Taco Bell](https://blog.comma.ai/taco-bell/)
+Checkout `./nootebooks/encode.ipynb` and `./notebooks/decode.ipynb` for an example of how to visualize the dataset using a segment of driving video from [comma's drive to Taco Bell](https://blog.comma.ai/taco-bell/)
 
-Checkout ./notebooks/gpt.ipynb for an example of how to use a pretrained GPT model to imagine future frames.
+Checkout `./notebooks/gpt.ipynb` for an example of how to use a pretrained GPT model to imagine future frames.
 
-https://github.com/commaai/commavq/assets/29985433/baa67ed4-be44-4250-8eeb-17f002203ca5
 
-https://github.com/commaai/commavq/assets/29985433/e39a7cb5-1b3e-40d3-bf1e-3646d800f9f1
+https://github.com/commaai/commavq/assets/29985433/b82ffe0d-dd31-475b-b493-4dc73544c0c7
+
+https://github.com/commaai/commavq/assets/29985433/8923d120-3cac-4239-9a80-9504c2654f36
 
 https://github.com/commaai/commavq/assets/29985433/8a8fb11d-82d9-4403-9957-f9c132f36f5b
 
