@@ -1,8 +1,11 @@
 """
 map_state_dict is a helper function to map the state dict from gpt2m.pt to a nanogpt model
 use this to finetune using the nanogpt training code!
-important: gpt2m was not trained with weight-tying so you will need to manually disable that
+important notes:
+- gpt2m was not trained with weight-tying so you will need to manually disable that
 by commenting this line https://github.com/karpathy/nanoGPT/blob/eba36e84649f3c6d840a93092cb779a260544d08/model.py#L138
+- gtp2m was trained with "NewGELU" from minGPT, while nanoGPT uses nn.GELU, the differences are small but if you want
+perfect match, you can change the activation function in the MLP defined in model.py file to NewGELU
 
 # usage:
 import torch
