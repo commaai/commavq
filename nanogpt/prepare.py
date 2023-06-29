@@ -22,7 +22,6 @@ if __name__ == '__main__':
 
   # takes 17GB in huggingface .cache dir, 100k segments
   dataset = load_dataset("commaai/commavq", num_proc=num_proc_load_dataset)
-  dataset = dataset
 
   def process(example):
     tokens = np.load(example['path'])
