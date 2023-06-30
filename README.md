@@ -34,7 +34,7 @@ In ./models/ you will find 3 Neural Networks saved in the onnx format
 - (experimental) `./models/temporal_decoder.onnx`: a temporal decoder which is a stateful version of the vanilla decoder
 
 ## Examples
-Checkout `./nootebooks/encode.ipynb` and `./notebooks/decode.ipynb` for an example of how to visualize the dataset using a segment of driving video from [comma's drive to Taco Bell](https://blog.comma.ai/taco-bell/)
+Checkout `./notebooks/encode.ipynb` and `./notebooks/decode.ipynb` for an example of how to visualize the dataset using a segment of driving video from [comma's drive to Taco Bell](https://blog.comma.ai/taco-bell/)
 
 Checkout `./notebooks/gpt.ipynb` for an example of how to use a pretrained GPT model to imagine future frames.
 
