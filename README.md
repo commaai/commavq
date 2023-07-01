@@ -4,7 +4,7 @@ commaVQ is a dataset of 100,000 heavily compressed driving videos for Machine Le
 ## 2x$500 Challenges!
 
 - Get 1.92 cross entropy loss or less in the val set and in our private val set (using `./notebooks/eval.ipynb`). gpt2m trained on a larger dataset gets 2.02 cross entropy loss.
-- Make gpt2m.onnx run at 0.9 sec/frame or less on a consumer GPU (e.g. NVIDIA 3090) without degredation in cross entropy loss. The current implementation runs at 1.5 sec/frame with kvcaching and float16.
+- Make gpt2m.onnx run at 0.9 sec/frame or less on a consumer GPU (e.g. NVIDIA 3090) without degredation in cross entropy loss. The current implementation runs at ~~1.5~~ 1.2 sec/frame with kvcaching and float16. (updating onnxruntime-gpu to 1.14 from 1.12 gave a 20% speed improvement!)
 
 ## Overview
 A VQ-VAE [1,2] was used to heavily compress each frame into 128 "tokens" of 10 bits each. Each entry of the dataset is a "segment" of compressed driving video, i.e. 1min of frames at 20 FPS. Each file is of shape 1200x8x16 and saved as int16.
