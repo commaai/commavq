@@ -46,7 +46,7 @@ if  __name__ == "__main__":
     '''
 
     # Logging
-    enable_wandb = True
+    enable_wandb = False
 
     if enable_wandb:
         wandb.init(
@@ -58,7 +58,7 @@ if  __name__ == "__main__":
     spatial_embeddings = torch.load("embedding.pt").to(device)
     spatial_embeddings.requires_grad = False
 
-    batch_size = 1
+    batch_size = 64
     n_frames = 2
     dataloader = TokenLoader('commavq-mini.npy', batch_size, n_frames=n_frames)
 
@@ -82,7 +82,7 @@ if  __name__ == "__main__":
         spatial_embeddings=spatial_embeddings,
     ).to(device)
     q = Quantizer(
-        n_embeddings=1024,
+        n_embeddings=128,
         embedding_dim=256,
         commitment_cost=0.25,
     ).to(device)
@@ -90,7 +90,6 @@ if  __name__ == "__main__":
     # Opt Prep
     iters = 10000000
 
-    loss_func = torch.nn.CrossEntropyLoss()
     opt = optim.AdamW(list(enc.parameters()) + list(dec.parameters()) + list(q.parameters()))
 
     i = 0
@@ -104,7 +103,7 @@ if  __name__ == "__main__":
 
         embs = spatial_embeddings[X].reshape(X.shape[0], X.shape[1], -1, spatial_embeddings.shape[-1])
         e0 = embs[:, 0]
-        X0 = X[:, 0].reshape(-1).long()
+        X0 = X[:, 0].reshape(X.shape[0], -1).long()
         labels = X[:, 1:].reshape(X.shape[0], -1)
 
         # Forward pass
@@ -122,7 +121,7 @@ if  __name__ == "__main__":
         # true_logits = logits[:, -N_FRAME_TOKS:]
 
         prep_logits, prep_labels = true_logits.reshape(-1, 1024), labels.reshape(-1)
-        reco_loss = loss_func(prep_logits, prep_labels)
+        reco_loss = F.cross_entropy(prep_logits, prep_labels)
         # latent_loss = q.compute_latent_loss(f_emb, f)
         
         # loss = reco_loss + latent_loss
@@ -146,22 +145,22 @@ if  __name__ == "__main__":
 
             fake_logits = fake_logits[:, :N_FRAME_TOKS]
             fake_prep_logits = fake_logits.reshape(-1, 1024)
-            unused_f_loss = loss_func(fake_prep_logits, prep_labels)
+            unused_f_loss = F.cross_entropy(fake_prep_logits, prep_labels)
             log['train/unused_f_loss'] = unused_f_loss.item()
     
 
-        last_pred = true_logits.argmax(dim=-1)[0] 
-        last_x0 = X0
-        last_x1 = labels[0]
+        pred = true_logits.argmax(dim=-1)
+        x0 = X0
+        x1 = labels
 
-        pred_x0_al = (last_pred == last_x0).sum()/last_x0.numel()
-        pred_x1_al = (last_pred == last_x1).sum()/last_x1.numel()
-        x0_x1_al = (last_x0 == last_x1).sum()/last_x1.numel()
+        pred_x0_acc = (pred == x0).sum()/x0.numel()
+        pred_x1_acc = (pred == x1).sum()/x1.numel()
+        x0_x1_eq = (x0 == x1).sum()/x1.numel()
 
         log["train/reco_loss"] = reco_loss.item()
-        log["train/pred_x0_al"] = pred_x0_al.item()
-        log["train/pred_x1_al"] = pred_x1_al.item()
-        log["train/x0_x1_al"] = x0_x1_al.item()
+        log["train/pred_x0_acc"] = pred_x0_acc.item()
+        log["train/pred_x1_acc"] = pred_x1_acc.item()
+        log["train/x0_x1_eq"] = x0_x1_eq.item()
 
         print(f"Step {i}")
         print("--------")
@@ -172,7 +171,10 @@ if  __name__ == "__main__":
 
         i += 1
         t0 = time.time()
-                
+
+    last_pred = pred[0]
+    last_x0 = x0[0]
+    last_x1 = x1[0]
 
     print('====== X0')
     print(last_x0)
