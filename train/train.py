@@ -1,4 +1,5 @@
 import torch
+import time
 import numpy as np
 import wandb
 
@@ -93,10 +94,13 @@ if  __name__ == "__main__":
     opt = optim.AdamW(list(enc.parameters()) + list(dec.parameters()) + list(q.parameters()))
 
     i = 0
+    t0 = time.time()
     for X in dataloader:
         if i >= iters:
             break
         X = X.long().to(device)
+
+        data_time = time.time() - t0
 
         embs = spatial_embeddings[X].reshape(X.shape[0], X.shape[1], -1, spatial_embeddings.shape[-1])
         e0 = embs[:, 0]
@@ -127,9 +131,14 @@ if  __name__ == "__main__":
 
         loss.backward()
         opt.step()
-        i += 1
 
-        log = {"step": i}
+        batch_time = time.time() - t0
+
+        log = {
+            "perf/step": i,
+            "perf/data_time": data_time,
+            "perf/batch_time": batch_time,
+        }
 
         with torch.no_grad():
             fake_f = torch.randn(f.shape).to(f.device)
@@ -138,7 +147,7 @@ if  __name__ == "__main__":
             fake_logits = fake_logits[:, :N_FRAME_TOKS]
             fake_prep_logits = fake_logits.reshape(-1, 1024)
             unused_f_loss = loss_func(fake_prep_logits, prep_labels)
-            log['unused_f_loss'] = unused_f_loss.item()
+            log['train/unused_f_loss'] = unused_f_loss.item()
     
 
         last_pred = true_logits.argmax(dim=-1)[0] 
@@ -149,10 +158,10 @@ if  __name__ == "__main__":
         pred_x1_al = (last_pred == last_x1).sum()/last_x1.numel()
         x0_x1_al = (last_x0 == last_x1).sum()/last_x1.numel()
 
-        log["reco_loss"] = reco_loss.item()
-        log["pred_x0_al"] = pred_x0_al.item()
-        log["pred_x1_al"] = pred_x1_al.item()
-        log["x0_x1_al"] = x0_x1_al.item()
+        log["train/reco_loss"] = reco_loss.item()
+        log["train/pred_x0_al"] = pred_x0_al.item()
+        log["train/pred_x1_al"] = pred_x1_al.item()
+        log["train/x0_x1_al"] = x0_x1_al.item()
 
         print(f"Step {i}")
         print("--------")
@@ -160,6 +169,9 @@ if  __name__ == "__main__":
             print(f"{name}: {val}")
         if enable_wandb:
             wandb.log(log)
+
+        i += 1
+        t0 = time.time()
                 
 
     print('====== X0')
