@@ -1,4 +1,5 @@
 import torch
+import math
 import numpy as np
 
 from torch import nn
@@ -47,7 +48,10 @@ class Decoder(nn.Module):
         super().__init__()
         self.transformer = Transformer(width, layers, heads)
         # TODO: weight tying here? 
+        self.ln_f = nn.LayerNorm(width)
         self.pred_head = nn.Linear(width, 1024, bias=False)
+
+        torch.nn.init.normal_(self.pred_head.weight, mean=0.0, std=0.02/math.sqrt(2*layers))
 
         # TODO:  scale = width ** -0.5
         self.frame_delim = nn.Parameter(torch.randn(width)) # * scale
@@ -69,14 +73,16 @@ class Decoder(nn.Module):
         
     def forward(self, x, f):
         # x: [b, 128, 256]; f: [b, s, 256]
-
+        '''
         fx = torch.cat([
             x,
             self.frame_delim.to(x.dtype)  + torch.zeros(x.shape[0], 1, x.shape[-1], dtype=x.dtype, device=x.device),
             f,
             self.frame_delim.to(x.dtype)  + torch.zeros(x.shape[0], 1, x.shape[-1], dtype=x.dtype, device=x.device),
         ], dim=1)  # concat space code with transformation code
+        '''
         # fx = torch.cat([x, f], dim=1)
+        fx = torch.cat([f, f], dim=1)
 
         pos = torch.arange(0, fx.shape[1], dtype=torch.long, device=x.device).unsqueeze(0) 
         p_embs = self.pos_emb(pos)
@@ -86,9 +92,45 @@ class Decoder(nn.Module):
         fx = fx.permute(1, 0, 2)  # NLD -> LND
         # y = self.transformer(fx, attn_mask=self.attn_mask)
         y = self.transformer(fx)
+        y = self.ln_f(y)
         y = y.permute(1, 0, 2)  # LND -> NLD
 
-        logits = self.pred_head(y)
+        update_logits = self.pred_head(y)
+        update_dist = update_logits.softmax(dim=-1)
+        prior = (F.one_hot(x, num_classes=1024) * 0.99).softmax(dim=-1)  # temperature to soften up
+
+        posterior = prior * update_dist
+        posterior /= posterior.sum(dim=-1, keepdims=True)
+
+        post_logs = (posterior / (1 - posterior)).log()
+        # posterior2 = post_logs.softmax(dim=-1)
+
+        '''
+        print("prior:")
+        print(prior.min())
+        print(prior.max())
+
+        print("update:")
+        print(update_dist.min())
+        print(update_dist.max())
+        print(update_dist.mean())
+        print(update_dist.std())
+
+        # print(update_dist.argmax(dim=-1))
+
+        print("posterior:")
+        # print(posterior)
+        # print(posterior.shape)
+        print(posterior.max())
+        print(posterior.min())
+        # print(posterior.sum(dim=-1))
+
+        print(x)
+        print(posterior.argmax(dim=-1))
+        print((posterior.argmax(dim=-1) == x).sum() / x.numel())
+        '''
+        logits = post_logs
+
         return logits
 
 

@@ -46,7 +46,7 @@ if  __name__ == "__main__":
     '''
 
     # Logging
-    enable_wandb = False
+    enable_wandb = True
 
     if enable_wandb:
         wandb.init(
@@ -58,7 +58,7 @@ if  __name__ == "__main__":
     spatial_embeddings = torch.load("embedding.pt").to(device)
     spatial_embeddings.requires_grad = False
 
-    batch_size = 64
+    batch_size = 1
     n_frames = 2
     dataloader = TokenLoader('commavq-mini.npy', batch_size, n_frames=n_frames)
 
@@ -78,7 +78,8 @@ if  __name__ == "__main__":
         layers=8,
         heads=8,
         n_tokens=N_DYNAMICS_TOKS,
-        n_input_tokens=N_DYNAMICS_TOKS + N_FRAME_TOKS + 2,
+        # n_input_tokens=N_DYNAMICS_TOKS + N_FRAME_TOKS + 2,
+        n_input_tokens=N_FRAME_TOKS,
         spatial_embeddings=spatial_embeddings,
     ).to(device)
     '''
@@ -117,7 +118,8 @@ if  __name__ == "__main__":
         # f, ppl, encodings = q(f_emb)
         f = f_emb
 
-        logits = dec(e0, f)
+        # logits = dec(e0, f)
+        logits = dec(X0, f)
 
         # TODO: why does this matter???
         true_logits = logits[:, :N_FRAME_TOKS]
@@ -145,7 +147,8 @@ if  __name__ == "__main__":
         # Check if you're using f embedding
         with torch.no_grad():
             fake_f = torch.randn(f.shape).to(f.device)
-            fake_logits = dec(e0, fake_f)
+            # fake_logits = dec(e0, fake_f)
+            fake_logits = dec(X0, fake_f)
 
             fake_logits = fake_logits[:, :N_FRAME_TOKS]
             fake_prep_logits = fake_logits.reshape(-1, 1024)
