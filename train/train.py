@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+import wandb
 
 from datasets import load_dataset
 from torch import nn
@@ -33,45 +34,63 @@ if  __name__ == "__main__":
 
     Next try variable length codings based on difference between tokens of frames
     Need to add delimiter tokens <|X1|> abcd <|F|> 12 <|X2>| xzyw <|EOT|> pad pad pad 
+
+
+    Current Objective:
+        Get the model to learn the spatial embedding table by passing it through the dynamics
+        bottleneck
+
+        N_DYN_TOKS == N_SPATIAL_TOKS
+
     '''
+
+    # Logging
+    enable_wandb = True
+
+    if enable_wandb:
+        wandb.init(
+            project="diff-encoding",
+        )
 
     # Data Prep
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    spatial_embeddings = torch.load("../embeddings.pt").to(device)
+    spatial_embeddings = torch.load("embedding.pt").to(device)
     spatial_embeddings.requires_grad = False
 
-    batch_size = 2
-    dataloader = TokenLoader('commavq-mini.npy', batch_size)
+    batch_size = 1
+    n_frames = 2
+    dataloader = TokenLoader('commavq-mini.npy', batch_size, n_frames=n_frames)
 
     # Model Prep
-
-    N_DYNAMICS_TOKS = 64  # s = N_FRAME_TOKS - 64 = 128 / 2
+    N_DYNAMICS_TOKS = 64 # s = N_FRAME_TOKS - 64 = 128 / 2
 
     enc = Encoder(
         width=256,
-        layers=2,
+        layers=8,
         heads=8,
         n_tokens=N_DYNAMICS_TOKS,
+        n_input_tokens=n_frames*128 + n_frames,
         spatial_embeddings=spatial_embeddings,
     ).to(device)
     dec = Decoder(
         width=256,
-        layers=2,
+        layers=8,
         heads=8,
         n_tokens=N_DYNAMICS_TOKS,
+        n_input_tokens=N_DYNAMICS_TOKS + N_FRAME_TOKS + 2,
         spatial_embeddings=spatial_embeddings,
     ).to(device)
     q = Quantizer(
-        n_embeddings=256,
+        n_embeddings=1024,
         embedding_dim=256,
         commitment_cost=0.25,
     ).to(device)
 
     # Opt Prep
-    iters = 200
+    iters = 10000000
 
     loss_func = torch.nn.CrossEntropyLoss()
-    opt = optim.AdamW(list(enc.parameters()) + list(dec.parameters()))
+    opt = optim.AdamW(list(enc.parameters()) + list(dec.parameters()) + list(q.parameters()))
 
     i = 0
     for X in dataloader:
@@ -79,37 +98,81 @@ if  __name__ == "__main__":
             break
         X = X.long().to(device)
 
-        embs = spatial_embeddings[X]
-        e0, e1 = embs[:, :N_FRAME_TOKS], embs[:, -N_FRAME_TOKS:]
-        labels = X[:, -N_FRAME_TOKS:]
+        embs = spatial_embeddings[X].reshape(X.shape[0], X.shape[1], -1, spatial_embeddings.shape[-1])
+        e0 = embs[:, 0]
+        X0 = X[:, 0].reshape(-1).long()
+        labels = X[:, 1:].reshape(X.shape[0], -1)
 
         # Forward pass
         opt.zero_grad()
 
         f_emb = enc(X)
 
-        f, ppl = q(f_emb)
+        # f, ppl, encodings = q(f_emb)
+        f = f_emb
 
-        e0 = torch.zeros(e0.shape).to(device)
+        logits = dec(e0, f)
 
-        logits = dec(e0, f, e1)
-        true_logits = logits[:, -N_FRAME_TOKS:]
+        # TODO: why does this matter???
+        true_logits = logits[:, :N_FRAME_TOKS]
+        # true_logits = logits[:, -N_FRAME_TOKS:]
 
         prep_logits, prep_labels = true_logits.reshape(-1, 1024), labels.reshape(-1)
         reco_loss = loss_func(prep_logits, prep_labels)
-        latent_loss = q.compute_latent_loss(f_emb, f)
+        # latent_loss = q.compute_latent_loss(f_emb, f)
         
-        print(reco_loss, latent_loss)
-        print(ppl)
-
-        loss = reco_loss + latent_loss
-        #2 loss = latent_loss
+        # loss = reco_loss + latent_loss
+        # loss = latent_loss
+        loss = reco_loss
 
         loss.backward()
         opt.step()
         i += 1
 
-    print(true_logits.argmax(dim=-1)[0])
-    print(labels[0])
-    print((true_logits.argmax(dim=-1)[0] == labels[0]).sum()/labels[0].numel())
+        log = {"step": i}
+
+        with torch.no_grad():
+            fake_f = torch.randn(f.shape).to(f.device)
+            fake_logits = dec(e0, fake_f)
+
+            fake_logits = fake_logits[:, :N_FRAME_TOKS]
+            fake_prep_logits = fake_logits.reshape(-1, 1024)
+            unused_f_loss = loss_func(fake_prep_logits, prep_labels)
+            log['unused_f_loss'] = unused_f_loss.item()
+    
+
+        last_pred = true_logits.argmax(dim=-1)[0] 
+        last_x0 = X0
+        last_x1 = labels[0]
+
+        pred_x0_al = (last_pred == last_x0).sum()/last_x0.numel()
+        pred_x1_al = (last_pred == last_x1).sum()/last_x1.numel()
+        x0_x1_al = (last_x0 == last_x1).sum()/last_x1.numel()
+
+        log["reco_loss"] = reco_loss.item()
+        log["pred_x0_al"] = pred_x0_al.item()
+        log["pred_x1_al"] = pred_x1_al.item()
+        log["x0_x1_al"] = x0_x1_al.item()
+
+        print(f"Step {i}")
+        print("--------")
+        for name, val in log.items():
+            print(f"{name}: {val}")
+        if enable_wandb:
+            wandb.log(log)
+                
+
+    print('====== X0')
+    print(last_x0)
+    print('====== X1')
+    print(last_x1)
+    print('====== PRED')
+    print(last_pred)
+    print('======')
+    print("pred - x0")
+    print((last_pred == last_x0).sum()/last_x0.numel())
+    print("pred - x1")
+    print((last_pred == last_x1).sum()/last_x1.numel())
+    print("x0 - x1")
+    print((last_x0 == last_x1).sum()/last_x1.numel())
 

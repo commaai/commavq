@@ -11,27 +11,50 @@ N_FRAME_TOKS = 128
 
 
 class Encoder(nn.Module):
-    def __init__(self, width, layers, heads, n_tokens, spatial_embeddings):
+    def __init__(self, width, layers, heads, n_tokens, n_input_tokens, spatial_embeddings):
         super().__init__()
         self.transformer = Transformer(width, layers, heads)
         self.n_tokens = n_tokens
+
+        # TODO:  scale = width ** -0.5
+        self.frame_delim = nn.Parameter(torch.randn(width)) # * scale
+
+        self.pos_emb = nn.Embedding(n_input_tokens, width)
         self.register_buffer('spatial_embeddings', spatial_embeddings, persistent=False)
     def forward(self, x):
+        x = x.reshape(x.shape[0], x.shape[1], -1) # flatten representation
+
         embs = self.spatial_embeddings[x]
-        c_embs = self.transformer(embs)
+        embs = torch.cat((embs,
+            self.frame_delim + torch.zeros(embs.shape[0], embs.shape[1], 1, embs.shape[-1], dtype=embs.dtype, device=embs.device)
+        ), dim=-2)
+        embs = embs.reshape(embs.shape[0], -1, embs.shape[-1])
+
+        pos = torch.arange(0, embs.shape[1], dtype=torch.long, device=embs.device).unsqueeze(0) 
+        p_embs = self.pos_emb(pos)
+
+        t_embs = embs + p_embs
+
+        c_embs = self.transformer(t_embs)
+        # TODO: WHY DOES THIS MATTER
         f = c_embs[:, :self.n_tokens]  # transformation is bottlenecked
+        # f = c_embs[:, -self.n_tokens:]  # transformation is bottlenecked
         return f
 
 
 class Decoder(nn.Module):
-    def __init__(self, width, layers, heads, n_tokens, spatial_embeddings):
+    def __init__(self, width, layers, heads, n_tokens, n_input_tokens, spatial_embeddings):
         super().__init__()
         self.transformer = Transformer(width, layers, heads)
         # TODO: weight tying here? 
         self.pred_head = nn.Linear(width, 1024, bias=False)
 
+        # TODO:  scale = width ** -0.5
+        self.frame_delim = nn.Parameter(torch.randn(width)) # * scale
+        self.pos_emb = nn.Embedding(n_input_tokens, width)
+
         full_attn_mask = self.build_attention_mask(2 * N_FRAME_TOKS + n_tokens)
-        self.register_buffer('attn_mask', full_attn_mask, persistent=False)
+        # self.register_buffer('attn_mask', full_attn_mask, persistent=False)
         self.register_buffer('spatial_embeddings', spatial_embeddings, persistent=False)
 
     def build_attention_mask(self, ctx_len):
@@ -44,16 +67,27 @@ class Decoder(nn.Module):
         mask.triu_(1)  # zero out the lower diagonal
         return mask
         
-    def forward(self, x, f, y):
+    def forward(self, x, f):
         # x: [b, 128, 256]; f: [b, s, 256]
-        fx = torch.cat([x, f, y], dim=1)  # concat space code with transformation code
 
-        fx = fx.permute(1, 0, 2)  # NLD -> LNDsq
+        fx = torch.cat([
+            x,
+            self.frame_delim.to(x.dtype)  + torch.zeros(x.shape[0], 1, x.shape[-1], dtype=x.dtype, device=x.device),
+            f,
+            self.frame_delim.to(x.dtype)  + torch.zeros(x.shape[0], 1, x.shape[-1], dtype=x.dtype, device=x.device),
+        ], dim=1)  # concat space code with transformation code
+        # fx = torch.cat([x, f], dim=1)
 
-        y = self.transformer(fx, attn_mask=self.attn_mask)
-        # y = y[:, :x.shape[1]]
+        pos = torch.arange(0, fx.shape[1], dtype=torch.long, device=x.device).unsqueeze(0) 
+        p_embs = self.pos_emb(pos)
 
+        fx = fx + p_embs
+
+        fx = fx.permute(1, 0, 2)  # NLD -> LND
+        # y = self.transformer(fx, attn_mask=self.attn_mask)
+        y = self.transformer(fx)
         y = y.permute(1, 0, 2)  # LND -> NLD
+
         logits = self.pred_head(y)
         return logits
 
@@ -94,4 +128,4 @@ class Quantizer(nn.Module):
         avg_probs = torch.mean(encodings, dim=0)
         perplexity = torch.exp(-torch.sum(avg_probs * torch.log(avg_probs + 1e-10)))
         
-        return quantized, perplexity
+        return quantized, perplexity, encoding_indices
