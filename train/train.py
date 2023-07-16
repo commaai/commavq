@@ -81,16 +81,19 @@ if  __name__ == "__main__":
         n_input_tokens=N_DYNAMICS_TOKS + N_FRAME_TOKS + 2,
         spatial_embeddings=spatial_embeddings,
     ).to(device)
+    '''
     q = Quantizer(
         n_embeddings=128,
         embedding_dim=256,
         commitment_cost=0.25,
     ).to(device)
+    '''
 
     # Opt Prep
     iters = 10000000
 
-    opt = optim.AdamW(list(enc.parameters()) + list(dec.parameters()) + list(q.parameters()))
+    # opt = optim.AdamW(list(enc.parameters()) + list(dec.parameters()) + list(q.parameters()))
+    opt = optim.AdamW(list(enc.parameters()) + list(dec.parameters()))
 
     i = 0
     t0 = time.time()
@@ -139,6 +142,7 @@ if  __name__ == "__main__":
             "perf/batch_time": batch_time,
         }
 
+        # Check if you're using f embedding
         with torch.no_grad():
             fake_f = torch.randn(f.shape).to(f.device)
             fake_logits = dec(e0, fake_f)
