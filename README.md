@@ -33,7 +33,7 @@ tokens = np.load(ds['0'][0]['path']) # first segment from the first data shard
 In ./models/ you will find 3 Neural Networks saved in the onnx format
 - `./models/encoder.onnx`: is the encoder used to compress the frames
 - `./models/decoder.onnx`: is the decoder used to decompress the frames
-- `./models/gtp2m.onnx`: a 300M parameter GPT trained on a larger version of this dataset
+- `./models/gpt2m.onnx`: a 300M parameter GPT trained on a larger version of this dataset
 - (experimental) `./models/temporal_decoder.onnx`: a temporal decoder which is a stateful version of the vanilla decoder
 
 ## Examples
