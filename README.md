@@ -30,11 +30,12 @@ tokens = np.load(ds['0'][0]['path']) # first segment from the first data shard
 
 
 ## Models
-In ./models/ you will find 3 Neural Networks saved in the onnx format
-- `./models/encoder.onnx`: is the encoder used to compress the frames
-- `./models/decoder.onnx`: is the decoder used to decompress the frames
-- `./models/gpt2m.onnx`: a 300M parameter GPT trained on a larger version of this dataset
-- (experimental) `./models/temporal_decoder.onnx`: a temporal decoder which is a stateful version of the vanilla decoder
+`./gpt2m/` is a submodule linking to https://huggingface.co/commaai/commavq-gpt2m. Make sure to init and pull submodules when cloning.
+You will find 3 Neural Networks saved in the onnx format
+- `./gpt2m/encoder.onnx`: is the encoder used to compress the frames
+- `./gpt2m/decoder.onnx`: is the decoder used to decompress the frames
+- `./gpt2m/gpt2m.onnx`: a 300M parameter GPT trained on a larger version of this dataset
+- (experimental) `./gpt2m/temporal_decoder.onnx`: a temporal decoder which is a stateful version of the vanilla decoder
 
 ## Examples
 Checkout `./notebooks/encode.ipynb` and `./notebooks/decode.ipynb` for an example of how to visualize the dataset using a segment of driving video from [comma's drive to Taco Bell](https://blog.comma.ai/taco-bell/)
