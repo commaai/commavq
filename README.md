@@ -12,7 +12,7 @@ commaVQ is a dataset of 100,000 heavily compressed driving videos for Machine Le
 ## Overview
 A VQ-VAE [1,2] was used to heavily compress each frame into 128 "tokens" of 10 bits each. Each entry of the dataset is a "segment" of compressed driving video, i.e. 1min of frames at 20 FPS. Each file is of shape 1200x8x16 and saved as int16.
 
-Note that the compressor is extremely lossy on purpose. It makes the dataset smaller and easy to play with (train GPT with large context size, fast autoregressive generation, etc.). We might extend the dataset to a less lossy version when we see fit.
+Note that the compressor is extremely lossy on purpose. It makes the dataset smaller and easy to play with (train GPT as a world model with large context size [3], fast autoregressive generation, etc.). We might extend the dataset to a less lossy version when we see fit.
 
 ## Download
 - Using huggingface datasets
@@ -53,3 +53,5 @@ https://github.com/commaai/commavq/assets/29985433/f6f7699b-b6cb-4f9c-80c9-8e00d
 [1] Van Den Oord, Aaron, and Oriol Vinyals. "Neural discrete representation learning." Advances in neural information processing systems 30 (2017).
 
 [2] Esser, Patrick, Robin Rombach, and Bjorn Ommer. "Taming transformers for high-resolution image synthesis." Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. 2021.
+
+[3] Micheli, Vincent, Eloi Alonso, and François Fleuret. "Transformers are Sample-Efficient World Models." The Eleventh International Conference on Learning Representations. 2022.
