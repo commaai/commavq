@@ -30,7 +30,7 @@ tokens = np.load(ds['0'][0]['path']) # first segment from the first data shard
 
 
 ## Models
-`./gpt2m/` is a submodule linking to https://huggingface.co/commaai/commavq-gpt2m. Make sure to init and pull submodules when cloning.
+`./gpt2m/` is a submodule linking to https://huggingface.co/commaai/commavq-gpt2m. Make sure to install `git lfs` and init and pull submodules when cloning.
 You will find 3 Neural Networks saved in the onnx format
 - `./gpt2m/encoder.onnx`: is the encoder used to compress the frames
 - `./gpt2m/decoder.onnx`: is the decoder used to decompress the frames
