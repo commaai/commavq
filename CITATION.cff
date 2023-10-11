@@ -1,0 +1,7 @@
+cff-version: 1.2.0
+message: "If you use commavq, please cite it as below."
+authors:
+- family-names: "comma.ai"
+title: "commavq: a dataset of tokenized driving video and a GPT model"
+date-released: 2023-06-25
+url: "https://github.com/commaai/commavq/"
