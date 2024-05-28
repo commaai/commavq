@@ -1,10 +1,18 @@
-# commavq
-commaVQ is a  dataset of 100,000 heavily compressed driving videos,
 
-| Real Video    | Compressed Video | Future Prediction |
-| ------------- | ---------------- |------------------ |
-| https://github.com/commaai/commavq/assets/29985433/91894bf7-592b-4204-b3f2-3e805984045c  | https://github.com/commaai/commavq/assets/29985433/3a799ac8-781e-461c-bf14-c15cea42b985    | https://github.com/commaai/commavq/assets/29985433/f6f7699b-b6cb-4f9c-80c9-8e00d75fbfae |
+| Source Video    | Compressed Video | Future Prediction |
+| --------------- | ---------------- |------------------ |
+| <video src="https://github.com/commaai/commavq/assets/29985433/91894bf7-592b-4204-b3f2-3e805984045c">  |  <video src="https://github.com/commaai/commavq/assets/29985433/3a799ac8-781e-461c-bf14-c15cea42b985">    |  <video src="https://github.com/commaai/commavq/assets/29985433/f6f7699b-b6cb-4f9c-80c9-8e00d75fbfae"> |
 
+A world model is a model that can predict the next state of the world given the observed previous states and actions.
+
+World models are essential to training all kinds of AI agents, especially self-driving models.
+
+commaVQ contains:
+- encoder/decoder models used to heavily compress driving scenes
+- a world model trained on 3,000,000 minutes of driving videos
+- a dataset of 100,000 minutes of compressed driving videos
+
+# Tasks
 
 ## GPT latency challenge: make me faster! $1000
 Make the gpt model run faster on a consumer GPU (e.g. NVIDIA 3090)
@@ -33,11 +41,11 @@ A VQ-VAE [1,2] was used to heavily compress each frame into 128 "tokens" of 10 b
 Note that the compressor is extremely lossy on purpose. It makes the dataset smaller and easy to play with (train GPT as a world model with large context size [3], fast autoregressive generation, etc.). We might extend the dataset to a less lossy version when we see fit.
 
 ## Examples
-Checkout `./notebooks/encode.ipynb` and `./notebooks/decode.ipynb` for an example of how to visualize the dataset using a segment of driving video from [comma's drive to Taco Bell](https://blog.comma.ai/taco-bell/)
+`./notebooks/encode.ipynb` and `./notebooks/decode.ipynb` for an example of how to visualize the dataset using a segment of driving video from [comma's drive to Taco Bell](https://blog.comma.ai/taco-bell/)
 
-Checkout `./notebooks/gpt.ipynb` for an example of how to use a pretrained GPT model to imagine future frames.
+`./notebooks/gpt.ipynb` for an example of how to use a pretrained GPT model to imagine future frames.
 
-Checkout `./notebooks/compress.ipynb` for an example of how we would like to temporally compress the tokens.
+`./notebooks/compress.ipynb` for an example of how we would like to temporally compress the tokens.
 
 ## References
 [1] Van Den Oord, Aaron, and Oriol Vinyals. "Neural discrete representation learning." Advances in neural information processing systems 30 (2017).
