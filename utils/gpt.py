@@ -30,12 +30,15 @@ class Config:
   n_head: int = 16
   dim: int = 1024
   intermediate_size: int = 4*1024
-  head_dim: int = 64
   tokens_per_frame: int = 129
 
   @property
   def bos_token(self):
     return self.vocab_size - 1
+
+  @property
+  def head_dim(self):
+    return self.dim // self.n_head
 
 class KVCache(nn.Module):
   def __init__(self, max_batch_size, max_seq_length, n_heads, head_dim, dtype=torch.bfloat16):
@@ -77,8 +80,7 @@ class Attention(nn.Module):
   def forward(self, x: Tensor, mask: Tensor, input_pos: Optional[Tensor] = None) -> Tensor:
     bsz, seqlen, _ = x.shape
 
-    kv_size = self.config.n_head * self.config.head_dim
-    q, k, v = self.c_attn(x).split([self.config.dim, kv_size, kv_size], dim=-1)
+    q, k, v = self.c_attn(x).split([self.config.dim, self.config.dim, self.config.dim], dim=-1)
 
     q = q.view(bsz, seqlen, self.config.n_head, self.config.head_dim)
     k = k.view(bsz, seqlen, self.config.n_head, self.config.head_dim)
@@ -88,6 +90,7 @@ class Attention(nn.Module):
 
     if self.kv_cache is not None:
       k, v = self.kv_cache.update(input_pos, k, v)
+
     y = F.scaled_dot_product_attention(q, k, v, attn_mask=mask, dropout_p=0.0)
     y = y.transpose(1, 2).contiguous().view(bsz, seqlen, self.config.dim)
     return self.c_proj(y)
@@ -116,24 +119,23 @@ class GPT(nn.Module):
     self.transformer = nn.ModuleDict(transformer)
     self.lm_head = nn.Linear(config.dim, config.vocab_size, bias=False)
 
-    self.mask_cache: Optional[Tensor] = None
+    self.causal_mask: Optional[Tensor] = None
     self.max_batch_size = -1
     self.max_seq_length = -1
 
   def setup_caches(self, max_batch_size, max_seq_length):
     if self.max_seq_length >= max_seq_length and self.max_batch_size >= max_batch_size:
       return
-    head_dim = self.config.dim // self.config.n_head
     max_seq_length = find_multiple(max_seq_length, 8)
     self.max_seq_length = max_seq_length
     self.max_batch_size = max_batch_size
     for b in self.transformer.h:
-      b.attn.kv_cache = KVCache(max_batch_size, max_seq_length, self.config.n_head, head_dim)
+      b.attn.kv_cache = KVCache(max_batch_size, max_seq_length, self.config.n_head, self.config.head_dim)
 
-    self.causal_mask = torch.tril(torch.ones(self.max_seq_length, self.max_seq_length, dtype=torch.bool))
+    self.causal_mask = torch.tril(torch.ones(self.max_seq_length, self.max_seq_length, dtype=torch.bool)).view(1, 1, self.max_seq_length, self.max_seq_length)
 
   def forward(self, idx: Tensor, input_pos: Optional[Tensor] = None) -> Tensor:
-    mask = self.causal_mask[None, None, input_pos]
+    mask = self.causal_mask[:, :, input_pos]
     x = self.transformer.wte(idx) + self.transformer.wpe(input_pos)
 
     for _, layer in enumerate(self.transformer.h):
