@@ -23,7 +23,7 @@ def sample(logits):
   return idx_next, probs
 
 @dataclass
-class Config:
+class GPTConfig:
   block_size: int = 20*129
   vocab_size: int = 1025
   n_layer: int = 24
@@ -56,7 +56,7 @@ class KVCache(nn.Module):
     return k_out, v_out
 
 class TransformerBlock(nn.Module):
-  def __init__(self, config: Config) -> None:
+  def __init__(self, config: GPTConfig) -> None:
     super().__init__()
     self.attn = Attention(config)
     self.mlp = FeedForward(config)
@@ -69,7 +69,7 @@ class TransformerBlock(nn.Module):
     return out
 
 class Attention(nn.Module):
-  def __init__(self, config: Config):
+  def __init__(self, config: GPTConfig):
     super().__init__()
     assert config.dim % config.n_head == 0
     self.config = config
@@ -96,7 +96,7 @@ class Attention(nn.Module):
     return self.c_proj(y)
 
 class FeedForward(nn.Module):
-  def __init__(self, config: Config) -> None:
+  def __init__(self, config: GPTConfig) -> None:
     super().__init__()
     self.c_fc = nn.Linear(config.dim, config.intermediate_size, bias=True)
     self.c_proj = nn.Linear(config.intermediate_size, config.dim, bias=True)
@@ -105,7 +105,7 @@ class FeedForward(nn.Module):
     return self.c_proj(F.gelu(self.c_fc(x), approximate='tanh'))
 
 class GPT(nn.Module):
-  def __init__(self, config: Config=Config()) -> None:
+  def __init__(self, config: GPTConfig=GPTConfig()) -> None:
     super().__init__()
     self.config = config
 
@@ -185,11 +185,11 @@ class GPT(nn.Module):
     seq[t+1:] = torch.cat(generated_tokens)
     return seq[t:]
 
-def get_state_dict(url='https://huggingface.co/commaai/commavq-gpt2m/resolve/main/pytorch_model.bin'):
-  state_dict = torch.hub.load_state_dict_from_url(url, map_location='cpu', weights_only=True)
-  transposed = ['attn.c_attn.weight', 'attn.c_proj.weight', 'mlp.c_fc.weight', 'mlp.c_proj.weight']
-  state_dict = {k: v for k, v in state_dict.items() if not any([k.endswith('.attn.masked_bias'), k.endswith('.attn.bias')])}
-  for k in state_dict.keys():
-    if any(k.endswith(w) for w in transposed):
-      state_dict[k] = torch.transpose(state_dict[k], 1, 0)
-  return state_dict
+  def load_state_dict_from_url(self,url='https://huggingface.co/commaai/commavq-gpt2m/resolve/main/pytorch_model.bin', *args, **kwargs):
+    state_dict = torch.hub.load_state_dict_from_url(url, map_location='cpu', weights_only=True)
+    transposed = ['attn.c_attn.weight', 'attn.c_proj.weight', 'mlp.c_fc.weight', 'mlp.c_proj.weight']
+    state_dict = {k: v for k, v in state_dict.items() if not any([k.endswith('.attn.masked_bias'), k.endswith('.attn.bias')])}
+    for k in state_dict.keys():
+      if any(k.endswith(w) for w in transposed):
+        state_dict[k] = torch.transpose(state_dict[k], 1, 0)
+    self.load_state_dict(state_dict,  *args, **kwargs)
