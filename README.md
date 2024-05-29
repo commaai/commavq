@@ -12,10 +12,10 @@ commaVQ contains:
 - a world model trained on 3,000,000 minutes of driving videos
 - a dataset of 100,000 minutes of compressed driving videos
 
-# Tasks
+# Task
 
 ## Lossless compression challenge: make me smaller! $500 challenge
-Losslessly compress 5,000 minutes of driving video. Go to [./compression/](./compression/) to start
+Losslessly compress 5,000 minutes of driving video "tokens". Go to [./compression/](./compression/) to start
 
 **Prize: highest compression rate on 5,000 minutes of driving video (~915MB) - Challenge ends July, 1st 2024 11:59pm AOE**
 
