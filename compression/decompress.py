@@ -1,8 +1,9 @@
+#!/usr/bin/python
 """
 the decompression file should be in your submission archive
-your archive can be packed in any format, as long as you include a script to unpack it along with your submitted archive (e.g. unpack_archive.sh)
+your archive can be packed in any format, as long as you send us a script to unpack it (e.g. unpack_archive.sh)
 this script should save the decompressed files back to their original format
-we will run a seperate script to compare the decompressed files with the original files
+we will run compression/evaluate.py to compare the decompressed files with the original files and confirm the compression rate
 """
 import lzma
 import numpy as np
