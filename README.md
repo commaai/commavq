@@ -30,7 +30,7 @@ Make the gpt model run faster on a consumer GPU (NVIDIA 3090). Go to [./notebook
 ## Compression challenge: make me smaller! $500 challenge
 losslessly compress one segment's tokens. Go to [./notebooks/compress.ipynb](./notebooks/compress.ipynb) to start
 
-**Prize: highest compression rate on the 4 first splits of the dataset - Challenge ends July, 1st 2024 11:59pm AOE**
+**Prize: highest compression rate on the first 4 splits of the dataset - Challenge ends July, 1st 2024 11:59pm AOE**
 
 | Implementation                                                                     | Compression rate |
 | :----------------------------------------------------------------------------------| ---------------: |
