@@ -5,7 +5,7 @@
 
 A world model is a model that can predict the next state of the world given the observed previous states and actions.
 
-World models are essential to training all kinds of AI agents, especially self-driving models.
+World models are essential to training all kinds of intelligent agents, especially self-driving models.
 
 commaVQ contains:
 - encoder/decoder models used to heavily compress driving scenes
