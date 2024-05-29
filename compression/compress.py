@@ -10,13 +10,13 @@ from datasets import load_dataset, DatasetDict
 output_dir = Path('./compression_challenge_submission/')
 
 def compress_tokens(tokens: np.ndarray) -> bytes:
-  tokens = tokens.astype(np.int16).reshape(-1, 128).T.ravel().tobytes()
+  tokens = tokens.astype(np.int16).reshape(-1, 128).T.ravel().tobytes() # transposing increases compression rate ;)
   return lzma.compress(tokens)
 
 def compress_example(example):
   path = Path(example['path'])
   tokens = np.load(path)
-  compressed = compress_tokens(tokens) # transposing increases compression ratio ;)
+  compressed = compress_tokens(tokens)
   compression_rate = (tokens.size * 10 / 8) / len(compressed) # 10 bits per token
   with open(output_dir/path.name, 'wb') as f:
     f.write(compressed)
