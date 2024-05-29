@@ -32,6 +32,8 @@ losslessly compress one segment's tokens. Go to [./notebooks/compress.ipynb](./n
 
 **Prize: highest compression rate on the first 4 splits of the dataset - Challenge ends July, 1st 2024 11:59pm AOE**
 
+n.b. you are allowed to have up to 1GB of resource files used by your compression algorithm (standard python libraries such as those in  [./requirements.txt](./requirements.txt) do not count in that limit)
+
 | Implementation                                                                     | Compression rate |
 | :----------------------------------------------------------------------------------| ---------------: |
 | lzma                                                                               |  1.63            |
