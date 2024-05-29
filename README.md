@@ -36,7 +36,7 @@ A world model [3] was trained to predict the next token given a context of past 
 
 [./notebooks/gpt.ipynb](./notebooks/gpt.ipynb) for an example of how to use the world model to imagine future frames.
 
-[./notebooks/compress.ipynb](./notebooks/compress.ipynb) for an example of how we would like to temporally compress the tokens of each segment
+[./compression/compress.py](./compression/compress.py) for an example of how to compress the tokens using lzma
 
 ## References
 [1] Van Den Oord, Aaron, and Oriol Vinyals. "Neural discrete representation learning." Advances in neural information processing systems 30 (2017).
