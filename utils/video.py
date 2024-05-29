@@ -28,8 +28,8 @@ def read_video(path):
 
 def transpose_and_clip(tensors):
   tensors = np.array(tensors)
-  tensors = np.transpose(tensors, (1,0,3,4,2))[0]
-  tensors = np.clip((tensors + 1.0) * 127.5, 0, 255).astype(np.uint8)
+  tensors = np.transpose(tensors, (0,2,3,1))
+  tensors = np.clip(tensors, 0, 255).astype(np.uint8)
   return tensors
 
 def transform_img(frame, output_size=OUTPUT_SIZE, crop_size=CROP_SIZE, scale=SCALE, cy=CY):
