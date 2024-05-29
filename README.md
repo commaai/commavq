@@ -14,29 +14,16 @@ commaVQ contains:
 
 # Tasks
 
-## GPT latency challenge: make me faster! $1000 challenge
-Make the GPT model run faster on a consumer GPU (NVIDIA 3090). Go to [./notebooks/gpt.ipynb](./notebooks/gpt.ipynb) to start
+## Lossless compression challenge: make me smaller! $500 challenge
+Losslessly compress 5,000 minutes of driving video. Go to [./compression/](./compression/) to start
 
-**Prize: 1st submission to reach 0.25 sec/frame**
+**Prize: highest compression rate on 5,000 minutes of driving video (~915MB) - Challenge ends July, 1st 2024 11:59pm AOE**
 
-| Implementation                                                                     | Latency       |
-| :----------------------------------------------------------------------------------| ------------: |
-| pytorch gpt-fast                                                                   | 0.3 sec/frame |
-| onnxruntime-gpu with microsoft.Attention w/ past_present_share_buffer              | 0.4 sec/frame |
-| onnxruntime-gpu with microsoft.Attention                                           | 0.5 sec/frame |
-| Naive onnxruntime-gpu implementation                                               | 1.5 sec/frame |
-
-
-## Compression challenge: make me smaller! $500 challenge
-Losslessly compress one segment's tokens. Go to [./notebooks/compress.ipynb](./notebooks/compress.ipynb) to start
-
-**Prize: highest compression rate on the first 4 splits of the dataset - Challenge ends July, 1st 2024 11:59pm AOE**
-
-Note: you are allowed to have up to 1GB of resource files used by your compression algorithm (standard python libraries such as those in  [./requirements.txt](./requirements.txt) do not count in that limit)
+Note: submit a single zip file containing the compressed data and a python script to decompress it into its original form. Everything in this repository and in PyPI is assumed to be available.
 
 | Implementation                                                                     | Compression rate |
 | :----------------------------------------------------------------------------------| ---------------: |
-| lzma                                                                               |  1.63            |
+| lzma                                                                               |  1.6             |
 
 
 ## Overview
