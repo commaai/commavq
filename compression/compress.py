@@ -37,4 +37,4 @@ if __name__ == '__main__':
   shutil.make_archive('compression_challenge_submission', 'zip', output_dir)
   # print compression rate
   rate = (sum(ds.num_rows.values()) * 1200 * 128 * 10 / 8) / os.path.getsize("compression_challenge_submission.zip")
-  print(f"Compression rate: {rate:.2f}")
+  print(f"Compression rate: {rate:.1f}")

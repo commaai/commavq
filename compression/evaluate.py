@@ -22,4 +22,4 @@ if __name__ == '__main__':
   ds.map(compare, desc="compare", num_proc=num_proc, load_from_cache_file=False)
   # print compression rate
   rate = (sum(ds.num_rows.values()) * 1200 * 128 * 10 / 8) / archive_path.stat().st_size
-  print(f"Compression rate: {rate:.2f}")
+  print(f"Compression rate: {rate:.1f}")
