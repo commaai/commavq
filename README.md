@@ -19,7 +19,7 @@ Losslessly compress 5,000 minutes of driving video "tokens". Go to [./compressio
 
 **Prize: highest compression rate on 5,000 minutes of driving video (~915MB) - Challenge ends July, 1st 2024 11:59pm AOE**
 
-Note: submit a single zip file containing the compressed data and a python script to decompress it into its original form. Everything in this repository and in PyPI is assumed to be available.
+Submit a single zip file containing the compressed data and a python script to decompress it into its original form. Top solutions will be listed [comma's official leaderboard](https://comma.ai/leaderboard).
 
 | Implementation                                                                     | Compression rate |
 | :----------------------------------------------------------------------------------| ---------------: |
