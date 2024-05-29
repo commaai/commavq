@@ -15,7 +15,7 @@ commaVQ contains:
 # Tasks
 
 ## GPT latency challenge: make me faster! $1000 challenge
-Make the gpt model run faster on a consumer GPU (NVIDIA 3090). Go to [./notebooks/gpt.ipynb](./notebooks/gpt.ipynb) to start
+Make the GPT model run faster on a consumer GPU (NVIDIA 3090). Go to [./notebooks/gpt.ipynb](./notebooks/gpt.ipynb) to start
 
 **Prize: 1st submission to reach 0.25 sec/frame**
 
@@ -28,11 +28,11 @@ Make the gpt model run faster on a consumer GPU (NVIDIA 3090). Go to [./notebook
 
 
 ## Compression challenge: make me smaller! $500 challenge
-losslessly compress one segment's tokens. Go to [./notebooks/compress.ipynb](./notebooks/compress.ipynb) to start
+Losslessly compress one segment's tokens. Go to [./notebooks/compress.ipynb](./notebooks/compress.ipynb) to start
 
 **Prize: highest compression rate on the first 4 splits of the dataset - Challenge ends July, 1st 2024 11:59pm AOE**
 
-n.b. you are allowed to have up to 1GB of resource files used by your compression algorithm (standard python libraries such as those in  [./requirements.txt](./requirements.txt) do not count in that limit)
+Note: you are allowed to have up to 1GB of resource files used by your compression algorithm (standard python libraries such as those in  [./requirements.txt](./requirements.txt) do not count in that limit)
 
 | Implementation                                                                     | Compression rate |
 | :----------------------------------------------------------------------------------| ---------------: |
