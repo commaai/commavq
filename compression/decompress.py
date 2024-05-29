@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """
 the decompression file should be in your submission archive
-your archive can be packed in any format, as long as you send us a script to unpack it (e.g. unpack_archive.sh)
+your archive should be packed in zip format, we will run unpack_archive.sh to unzip it and access this decompression code
 this script should save the decompressed files back to their original format
 we will run compression/evaluate.py to compare the decompressed files with the original files and confirm the compression rate
 """
