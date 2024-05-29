@@ -14,21 +14,23 @@ commaVQ contains:
 
 # Tasks
 
-## GPT latency challenge: make me faster! $1000
-Make the gpt model run faster on a consumer GPU (e.g. NVIDIA 3090)
-Go to [./notebooks/gpt.ipynb](./notebooks/gpt.ipynb) to start
+## GPT latency challenge: make me faster! $1000 challenge
+Make the gpt model run faster on a consumer GPU (NVIDIA 3090). Go to [./notebooks/gpt.ipynb](./notebooks/gpt.ipynb) to start
+
+**Prize: 1st submission to reach 0.25 sec/frame**
 
 | Implementation                                                                     | Latency       |
 | :----------------------------------------------------------------------------------| ------------: |
 | pytorch gpt-fast                                                                   | 0.3 sec/frame |
-| onnxruntime-gpu with microsoft.Attention operators and past_present_share_buffer   | 0.4 sec/frame |
-| onnxruntime-gpu with microsoft.Attention operators                                 | 0.5 sec/frame |
+| onnxruntime-gpu with microsoft.Attention w/ past_present_share_buffer              | 0.4 sec/frame |
+| onnxruntime-gpu with microsoft.Attention                                           | 0.5 sec/frame |
 | Naive onnxruntime-gpu implementation                                               | 1.5 sec/frame |
 
 
-## Compression challenge: make me smaller! $1000
-losslessly compress one segment's tokens.
-Go to [./notebooks/compress.ipynb](./notebooks/compress.ipynb) to start
+## Compression challenge: make me smaller! $500 challenge
+losslessly compress one segment's tokens. Go to [./notebooks/compress.ipynb](./notebooks/compress.ipynb) to start
+
+**Prize: highest compression rate on the 4 first splits of the dataset - Challenge ends July, 1st 2024 11:59pm AOE**
 
 | Implementation                                                                     | Compression rate |
 | :----------------------------------------------------------------------------------| ---------------: |
