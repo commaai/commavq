@@ -1,4 +1,3 @@
-#!/usr/bin/pytho
 import os
 import lzma
 import multiprocessing

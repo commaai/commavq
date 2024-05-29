@@ -1,20 +1,14 @@
-#!/usr/bin/python
-"""
-the decompression file should be in your submission archive
-your archive should be packed in zip format, we will run unpack_archive.sh to unzip it and access this decompression code
-this script should save the decompressed files back to their original format
-we will run compression/evaluate.py to compare the decompressed files with the original files and confirm the compression rate
-"""
+import os
 import lzma
 import numpy as np
 from pathlib import Path
 import multiprocessing
 from datasets import load_dataset, DatasetDict
 
-output_dir = Path('./compression_challenge_submission_decompressed/')
+output_dir = Path(os.environ.get('OUTPUT_DIR', './compression_challenge_submission_decompressed/'))
 
-def decompress_bytes(bytes: bytes) -> np.ndarray:
-  tokens = np.frombuffer(lzma.decompress(bytes), dtype=np.int16)
+def decompress_bytes(x: bytes) -> np.ndarray:
+  tokens = np.frombuffer(lzma.decompress(x), dtype=np.int16)
   return tokens.reshape(128, -1).T.reshape(-1, 8, 16)
 
 def decompress_example(example):

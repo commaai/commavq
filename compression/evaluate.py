@@ -1,11 +1,11 @@
-#!/usr/bin/python
+import os
 import numpy as np
 from pathlib import Path
 import multiprocessing
 from datasets import load_dataset, DatasetDict
 
-archive_path = Path('./compression_challenge_submission.zip')
-unpacked_archive = Path('./compression_challenge_submission_decompressed/')
+archive_path = Path(os.environ.get('PACKED_ARCHIVE', './compression_challenge_submission.zip'))
+unpacked_archive = Path(os.environ.get('UNPACKED_ARCHIVE', './compression_challenge_submission_decompressed/'))
 
 def compare(example):
   path = Path(example['path'])
