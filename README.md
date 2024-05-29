@@ -16,7 +16,7 @@ commaVQ contains:
 
 ## GPT latency challenge: make me faster! $1000
 Make the gpt model run faster on a consumer GPU (e.g. NVIDIA 3090)
-Go to `./notebooks/gpt.ipynb` to start
+Go to [./notebooks/gpt.ipynb](./notebooks/gpt.ipynb) to start
 
 | Implementation                                                                     | Latency       |
 | :----------------------------------------------------------------------------------| ------------: |
@@ -28,7 +28,7 @@ Go to `./notebooks/gpt.ipynb` to start
 
 ## Compression challenge: make me smaller! $1000
 losslessly compress one segment's tokens.
-Go to `./notebooks/compress.ipynb` to start
+Go to [./notebooks/compress.ipynb](./notebooks/compress.ipynb) to start
 
 | Implementation                                                                     | Compression rate |
 | :----------------------------------------------------------------------------------| ---------------: |
@@ -41,11 +41,11 @@ A VQ-VAE [1,2] was used to heavily compress each video frame into 128 "tokens" o
 A world model [3] was trained to predict the next token given a context of past tokens. This world model is a Generative Pre-trained Transformer (GPT) [4] trained on 3,000,000 minutes of driving videos following a similar recipe to [5].
 
 ## Examples
-`./notebooks/encode.ipynb` and `./notebooks/decode.ipynb` for an example of how to visualize the dataset using a segment of driving video from [comma's drive to Taco Bell](https://blog.comma.ai/taco-bell/)
+[./notebooks/encode.ipynb](./notebooks/encode.ipynb) and [./notebooks/decode.ipynb](./notebooks/decode.ipynb) for an example of how to visualize the dataset using a segment of driving video from [comma's drive to Taco Bell](https://blog.comma.ai/taco-bell/)
 
-`./notebooks/gpt.ipynb` for an example of how to use the world model to imagine future frames.
+[./notebooks/gpt.ipynb](./notebooks/gpt.ipynb) for an example of how to use the world model to imagine future frames.
 
-`./notebooks/compress.ipynb` for an example of how we would like to temporally compress the tokens of each segment
+[./notebooks/compress.ipynb](./notebooks/compress.ipynb) for an example of how we would like to temporally compress the tokens of each segment
 
 ## References
 [1] Van Den Oord, Aaron, and Oriol Vinyals. "Neural discrete representation learning." Advances in neural information processing systems 30 (2017).
