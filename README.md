@@ -38,6 +38,17 @@ A world model [3] was trained to predict the next token given a context of past 
 
 [./compression/compress.py](./compression/compress.py) for an example of how to compress the tokens using lzma
 
+## Download the dataset
+- Using huggingface datasets
+```python
+import numpy as np
+from datasets import load_dataset
+num_proc = 40 # CPUs go brrrr
+ds = load_dataset('commaai/commavq', num_proc=num_proc)
+tokens = np.load(ds['0'][0]['path']) # first segment from the first data shard
+```
+- Manually download from huggingface datasets repository: https://huggingface.co/datasets/commaai/commavq
+
 ## References
 [1] Van Den Oord, Aaron, and Oriol Vinyals. "Neural discrete representation learning." Advances in neural information processing systems 30 (2017).
 
