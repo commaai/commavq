@@ -76,6 +76,7 @@ class Attention(nn.Module):
     # key, query, value projections for all heads, but in a batch
     self.c_attn = nn.Linear(config.dim, 3*config.dim, bias=True)
     self.c_proj = nn.Linear(config.dim, config.dim, bias=True)
+    self.kv_cache = None
 
   def forward(self, x: Tensor, mask: Tensor, input_pos: Optional[Tensor] = None) -> Tensor:
     bsz, seqlen, _ = x.shape
@@ -90,6 +91,8 @@ class Attention(nn.Module):
 
     if self.kv_cache is not None:
       k, v = self.kv_cache.update(input_pos, k, v)
+    else:
+      mask = mask[:, :, :, :seqlen]
 
     y = F.scaled_dot_product_attention(q, k, v, attn_mask=mask, dropout_p=0.0)
     y = y.transpose(1, 2).contiguous().view(bsz, seqlen, self.config.dim)
@@ -118,10 +121,9 @@ class GPT(nn.Module):
 
     self.transformer = nn.ModuleDict(transformer)
     self.lm_head = nn.Linear(config.dim, config.vocab_size, bias=False)
-
-    self.causal_mask: Optional[Tensor] = None
     self.max_batch_size = -1
     self.max_seq_length = -1
+    self.register_buffer("causal_mask", torch.tril(torch.ones(config.block_size, config.block_size, dtype=torch.bool)).view(1, 1, config.block_size, config.block_size))
 
   def setup_caches(self, max_batch_size, max_seq_length):
     if self.max_seq_length >= max_seq_length and self.max_batch_size >= max_batch_size:
@@ -135,6 +137,9 @@ class GPT(nn.Module):
     self.causal_mask = torch.tril(torch.ones(self.max_seq_length, self.max_seq_length, dtype=torch.bool)).view(1, 1, self.max_seq_length, self.max_seq_length)
 
   def forward(self, idx: Tensor, input_pos: Optional[Tensor] = None) -> Tensor:
+    if input_pos is None:
+      input_pos = torch.arange(idx.shape[1], device=idx.device)
+
     mask = self.causal_mask[:, :, input_pos]
     x = self.transformer.wte(idx) + self.transformer.wpe(input_pos)
 
@@ -185,10 +190,11 @@ class GPT(nn.Module):
     seq[t+1:] = torch.cat(generated_tokens)
     return seq[t:]
 
-  def load_state_dict_from_url(self,url='https://huggingface.co/commaai/commavq-gpt2m/resolve/main/pytorch_model.bin', *args, **kwargs):
+  def load_state_dict_from_url(self, url='https://huggingface.co/commaai/commavq-gpt2m/resolve/main/pytorch_model.bin', *args, **kwargs):
     state_dict = torch.hub.load_state_dict_from_url(url, map_location='cpu', weights_only=True)
     transposed = ['attn.c_attn.weight', 'attn.c_proj.weight', 'mlp.c_fc.weight', 'mlp.c_proj.weight']
     state_dict = {k: v for k, v in state_dict.items() if not any([k.endswith('.attn.masked_bias'), k.endswith('.attn.bias')])}
+    state_dict['causal_mask'] = torch.tril(torch.ones(self.config.block_size, self.config.block_size, dtype=torch.bool)).view(1, 1, self.config.block_size, self.config.block_size)
     for k in state_dict.keys():
       if any(k.endswith(w) for w in transposed):
         state_dict[k] = torch.transpose(state_dict[k], 1, 0)
