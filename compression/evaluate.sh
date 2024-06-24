@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 if [ -z "$1" ]; then
   echo "Usage: $0 <path_to_submission.zip>"
   exit 1
