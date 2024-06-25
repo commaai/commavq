@@ -6,7 +6,9 @@ from pathlib import Path
 import multiprocessing
 from datasets import load_dataset, DatasetDict
 
-output_dir = Path(os.environ.get('OUTPUT_DIR', './compression_challenge_submission_decompressed/'))
+HERE = Path(__file__).resolve().parent
+
+output_dir = Path(os.environ.get('OUTPUT_DIR', HERE/'./compression_challenge_submission_decompressed/'))
 
 def decompress_bytes(x: bytes) -> np.ndarray:
   tokens = np.frombuffer(lzma.decompress(x), dtype=np.int16)
