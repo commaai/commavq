@@ -15,6 +15,14 @@ To evalute your submission, we will run:
 
 | Implementation                                                                     | Compression rate |
 | :----------------------------------------------------------------------------------| ---------------: |
-| lzma                                                                               |  1.6             |
+| [pkourouklidis](https://github.com/pkourouklidis) (arithmetic coding with GPT)     |  2.6             |
+| anonymous (zpaq)                                                                   |  2.3             |
+| [rostislav](https://github.com/rostislav) (zpaq)                                   |  2.3             |
+| anonymous (zpaq)                                                                   |  2.2             |
+| anonymous (zpaq)                                                                   |  2.2             |
+| [0x41head](https://github.com/0x41head) (zpaq)                                     |  2.2             |
+| [tillinf](https://github.com/tillinf) (zpaq)                                       |  2.2             |
+| baseline (lzma)                                                                    |  1.6             |
+
 
 Have fun!

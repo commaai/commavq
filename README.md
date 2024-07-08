@@ -17,13 +17,20 @@ commaVQ contains:
 ## Lossless compression challenge: make me smaller! $500 challenge
 Losslessly compress 5,000 minutes of driving video "tokens". Go to [./compression/](./compression/) to start
 
-**Prize: highest compression rate on 5,000 minutes of driving video (~915MB) - Challenge ends July, 1st 2024 11:59pm AOE**
+**Prize: highest compression rate on 5,000 minutes of driving video (~915MB) - Challenge ended July, 1st 2024 11:59pm AOE**
 
-Submit a single zip file containing the compressed data and a python script to decompress it into its original form. Top solutions will be listed on [comma's official leaderboard](https://comma.ai/leaderboard).
+Submit a single zip file containing the compressed data and a python script to decompress it into its original form. Top solutions are listed on [comma's official leaderboard](https://comma.ai/leaderboard).
 
 | Implementation                                                                     | Compression rate |
 | :----------------------------------------------------------------------------------| ---------------: |
-| lzma                                                                               |  1.6             |
+| [pkourouklidis](https://github.com/pkourouklidis) (arithmetic coding with GPT)     |  2.6             |
+| anonymous (zpaq)                                                                   |  2.3             |
+| [rostislav](https://github.com/rostislav) (zpaq)                                   |  2.3             |
+| anonymous (zpaq)                                                                   |  2.2             |
+| anonymous (zpaq)                                                                   |  2.2             |
+| [0x41head](https://github.com/0x41head) (zpaq)                                     |  2.2             |
+| [tillinf](https://github.com/tillinf) (zpaq)                                       |  2.2             |
+| baseline (lzma)                                                                    |  1.6             |
 
 
 ## Overview
