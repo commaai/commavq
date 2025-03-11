@@ -23,6 +23,7 @@ Submit a single zip file containing the compressed data and a python script to d
 
 | Implementation                                                                     | Compression rate |
 | :----------------------------------------------------------------------------------| ---------------: |
+| [szabolcs-cs](https://github.com/szabolcs-cs) (self-compressing neural network)    |  3.4             |
 | [pkourouklidis](https://github.com/pkourouklidis) (arithmetic coding with GPT)     |  2.6             |
 | anonymous (zpaq)                                                                   |  2.3             |
 | [rostislav](https://github.com/rostislav) (zpaq)                                   |  2.3             |
