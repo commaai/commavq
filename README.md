@@ -1,3 +1,18 @@
+<div align="center">
+<h1>commaVQ challenge</h1>
+
+<h3>
+  <a href="https://comma.ai/leaderboard">Leaderboard</a>
+  <span> · </span>
+  <a href="https://comma.ai/jobs">comma.ai/jobs</a>
+  <span> · </span>
+  <a href="https://discord.comma.ai">Discord</a>
+  <span> · </span>
+  <a href="https://x.com/comma_ai">X</a>
+</h3>
+
+</div>
+
 
 | Source Video    | Compressed Video | Future Prediction |
 | --------------- | ---------------- |------------------ |
@@ -19,7 +34,7 @@ Losslessly compress 5,000 minutes of driving video "tokens". Go to [./compressio
 
 **Prize: highest compression rate on 5,000 minutes of driving video (~915MB) - Challenge ended July, 1st 2024 11:59pm AOE**
 
-Submit a single zip file containing the compressed data and a python script to decompress it into its original form. Top solutions are listed on [comma's official leaderboard](https://comma.ai/leaderboard).
+Submit a single zip file containing the compressed data and a python script to decompress it into its original form using [this form](https://forms.gle/US88Hg7UR6bBuW3BA). Top solutions are listed on [comma's official leaderboard](https://comma.ai/leaderboard).
 
 | Implementation                                                                     | Compression rate |
 | :----------------------------------------------------------------------------------| ---------------: |
