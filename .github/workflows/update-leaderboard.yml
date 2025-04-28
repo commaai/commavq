@@ -23,7 +23,7 @@ jobs:
           sudo mv pup /usr/local/bin/
 
       - name: Fetch remote leaderboard page
-        run: wget -qO page.html https://comma-web--pr80-lk97map7.web.app/leaderboard
+        run: wget -qO page.html https://comma.ai/leaderboard
 
       - name: Extract table
         run: |
