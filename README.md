@@ -58,21 +58,6 @@ Submit a single zip file containing the compressed data and a python script to d
    <td>
    </td>
    <td>
-    3.4
-   </td>
-   <td>
-    <a href="https://github.com/szabolcs-cs">
-     szabolcs-cs
-    </a>
-   </td>
-   <td>
-    self-compressing neural network
-   </td>
-  </tr>
-  <tr>
-   <td>
-   </td>
-   <td>
     2.9
    </td>
    <td>
