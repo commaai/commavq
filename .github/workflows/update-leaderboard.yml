@@ -13,15 +13,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install HTML extraction tool
+      - name: Install pup 
         run: |
-          sudo apt update
-          sudo apt install -y pup
+          sudo apt-get update
+          sudo apt-get install -y unzip curl
+          curl -sL https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip -o pup.zip
+          unzip pup.zip
+          chmod +x pup
+          sudo mv pup /usr/local/bin/
 
       - name: Fetch remote leaderboard page
         run: wget -qO page.html https://comma-web--pr80-lk97map7.web.app/leaderboard
 
-      - name: Extract only your #my-table HTML
+      - name: Extract table
         run: |
           pup 'div#compression_challenge_table table' < page.html > table.html
 
