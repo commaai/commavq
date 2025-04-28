@@ -36,18 +36,8 @@ Losslessly compress 5,000 minutes of driving video "tokens". Go to [./compressio
 
 Submit a single zip file containing the compressed data and a python script to decompress it into its original form using [this form](https://forms.gle/US88Hg7UR6bBuW3BA). Top solutions are listed on [comma's official leaderboard](https://comma.ai/leaderboard).
 
-| Implementation                                                                     | Compression rate |
-| :----------------------------------------------------------------------------------| ---------------: |
-| [szabolcs-cs](https://github.com/szabolcs-cs) (self-compressing neural network)    |  3.4             |
-| [pkourouklidis](https://github.com/pkourouklidis) (arithmetic coding with GPT)     |  2.6             |
-| anonymous (zpaq)                                                                   |  2.3             |
-| [rostislav](https://github.com/rostislav) (zpaq)                                   |  2.3             |
-| anonymous (zpaq)                                                                   |  2.2             |
-| anonymous (zpaq)                                                                   |  2.2             |
-| [0x41head](https://github.com/0x41head) (zpaq)                                     |  2.2             |
-| [tillinf](https://github.com/tillinf) (zpaq)                                       |  2.2             |
-| baseline (lzma)                                                                    |  1.6             |
-
+<!-- TABLE-START -->
+<!-- TABLE-END -->
 
 ## Overview
 A VQ-VAE [1,2] was used to heavily compress each video frame into 128 "tokens" of 10 bits each. Each entry of the dataset is a "segment" of compressed driving video, i.e. 1min of frames at 20 FPS. Each file is of shape 1200x8x16 and saved as int16.

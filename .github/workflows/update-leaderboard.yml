@@ -1,0 +1,42 @@
+name: Update Leaderboard Table
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-leaderboard:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install HTML extraction tool
+        run: |
+          sudo apt update
+          sudo apt install -y pup
+
+      - name: Fetch remote leaderboard page
+        run: wget -qO page.html https://comma-web--pr80-lk97map7.web.app/leaderboard
+
+      - name: Extract only your #my-table HTML
+        run: |
+          pup 'div#compression_challenge_table table' < page.html > table.html
+
+      - name: Splice HTML into README
+        run: |
+          awk '
+            /<!-- TABLE-START -->/ { print; system("cat table.html"); skip=1; next }
+            /<!-- TABLE-END -->/   { skip=0 }
+            skip==0               { print }
+          ' README.md > README.updated.md
+          mv README.updated.md README.md
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          # only commit if there are changes
+          git diff --quiet || (git add README.md && git commit -m "ci: update leaderboard table" && git push)
