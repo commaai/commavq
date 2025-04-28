@@ -19,7 +19,7 @@ jobs:
           sudo apt install -y pup
 
       - name: Fetch remote leaderboard page
-        run: wget -qO page.html https://comma.ai/leaderboard
+        run: wget -qO page.html https://comma-web--pr80-lk97map7.web.app/leaderboard
 
       - name: Extract only your #my-table HTML
         run: |
