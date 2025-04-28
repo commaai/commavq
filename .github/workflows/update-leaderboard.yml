@@ -29,18 +29,19 @@ jobs:
         run: |
           pup 'div#compression_challenge_table table' < page.html > table.html
 
-      - name: Splice HTML into README
+      - name: Splice HTML into both README files
         run: |
-          awk '
-            /<!-- TABLE-START -->/ { print; system("cat table.html"); skip=1; next }
-            /<!-- TABLE-END -->/   { skip=0 }
-            skip==0               { print }
-          ' README.md > README.updated.md
-          mv README.updated.md README.md
+          for file in README.md compression/README.md; do
+            awk '
+              /<!-- TABLE-START -->/ { print; system("cat table.html"); skip=1; next }
+              /<!-- TABLE-END -->/   { skip=0 }
+              skip==0               { print }
+            ' "$file" > "${file}.updated"
+            mv "${file}.updated" "$file"
+          done
 
       - name: Commit & push if changed
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          # only commit if there are changes
-          git diff --quiet || (git add README.md && git commit -m "ci: update leaderboard table" && git push)
+          git diff --quiet || (git add README.md compression/README.md && git commit -m "ci: update leaderboard tables" && git push)
