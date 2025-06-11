@@ -188,6 +188,21 @@ Submit a single zip file containing the compressed data and a python script to d
    <td>
    </td>
    <td>
+    2.2
+   </td>
+   <td>
+    <a href="https://github.com/nuniesmith">
+     nuniesmith
+    </a>
+   </td>
+   <td>
+    zpaq
+   </td>
+  </tr>
+  <tr>
+   <td>
+   </td>
+   <td>
     1.6
    </td>
    <td>

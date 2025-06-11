@@ -164,6 +164,21 @@ To evalute your submission, we will run:
    <td>
    </td>
    <td>
+    2.2
+   </td>
+   <td>
+    <a href="https://github.com/nuniesmith">
+     nuniesmith
+    </a>
+   </td>
+   <td>
+    zpaq
+   </td>
+  </tr>
+  <tr>
+   <td>
+   </td>
+   <td>
     1.6
    </td>
    <td>
