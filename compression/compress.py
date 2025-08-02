@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
   # load split 0 and 1
   data_files = {'train': ['data-0000.tar.gz', 'data-0001.tar.gz']}
-  ds = load_dataset('commaai/commavq', num_proc=num_proc, split=splits, data_files=data_files)
+  ds = load_dataset('commaai/commavq', num_proc=num_proc, data_files=data_files)
 
   # compress
   ratios = ds.map(compress_example, desc="compress_example", num_proc=num_proc, load_from_cache_file=False)
