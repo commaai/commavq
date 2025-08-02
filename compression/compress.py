@@ -17,11 +17,11 @@ def compress_tokens(tokens: np.ndarray) -> bytes:
   return lzma.compress(tokens)
 
 def compress_example(example):
-  path = Path(example['path'])
-  tokens = np.load(path)
+  tokens = np.array(example['token.npy'])
+  name = example['json']['file_name'] # or example['__key__']
   compressed = compress_tokens(tokens)
   compression_rate = (tokens.size * 10 / 8) / len(compressed) # 10 bits per token
-  with open(output_dir/path.name, 'wb') as f:
+  with open(output_dir/name, 'wb') as f:
     f.write(compressed)
   example['compression_rate'] = compression_rate
   return example
@@ -31,10 +31,8 @@ if __name__ == '__main__':
   num_proc = multiprocessing.cpu_count()
 
   # load split 0 and 1
-  splits = ['0', '1']
-  data_files = {'0': 'data_0_to_2500.zip', '1': 'data_2500_to_5000.zip'} # force huggingface datasets to only download these files
+  data_files = {'train': ['data-0000.tar.gz', 'data-0001.tar.gz']}
   ds = load_dataset('commaai/commavq', num_proc=num_proc, split=splits, data_files=data_files)
-  ds = DatasetDict(zip(splits, ds))
 
   # compress
   ratios = ds.map(compress_example, desc="compress_example", num_proc=num_proc, load_from_cache_file=False)
