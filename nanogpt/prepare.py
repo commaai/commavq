@@ -24,7 +24,7 @@ if __name__ == '__main__':
   dataset = load_dataset("commaai/commavq", num_proc=num_proc_load_dataset)
 
   def process(example):
-    tokens = np.load(example['path'])
+    tokens = np.array(example['token.npy'])
     tokens = tokens.reshape(tokens.shape[0], -1)
     # prepend BOS_TOKEN
     tokens = np.c_[np.ones(len(tokens), dtype=np.int16)*BOS_TOKEN, tokens]
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     filename = os.path.join(os.path.dirname(__file__), f'{split}.bin')
     dtype = np.uint16 # (can do since max_token_value == 1025 is < 2**16)
     arr = np.memmap(filename, dtype=dtype, mode='w+', shape=(arr_len,))
-    total_batches = 100 if split == '40' else 1024 # last split is the val set and is smaller
+    total_batches = 1024 
     idx = 0
     for batch_idx in tqdm(range(total_batches), desc=f'writing {filename}'):
       # Batch together samples for faster write
