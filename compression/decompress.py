@@ -29,4 +29,4 @@ if __name__ == '__main__':
   ds = load_dataset('commaai/commavq', num_proc=num_proc, data_files=data_files)
 
   # decompress
-  ds.map(decompress_example, desc="decompress_example", num_proc=num_proc)
+  ds.map(decompress_example, desc="decompress_example", num_proc=num_proc, load_from_cache_file=False)
