@@ -233,9 +233,11 @@ A world model [3] was trained to predict the next token given a context of past 
 ```python
 import numpy as np
 from datasets import load_dataset
-num_proc = 40 # CPUs go brrrr
-ds = load_dataset('commaai/commavq', num_proc=num_proc)
-tokens = np.load(ds['0'][0]['path']) # first segment from the first data shard
+# load the first shard
+data_files = {'train': ['data-0000.tar.gz']}
+ds = load_dataset('commaai/commavq',  data_files=data_files)
+tokens = np.array(ds['train'][0]['token.npy'])
+poses = np.array(ds['train'][0]['pose.npy'])
 ```
 - Manually download from huggingface datasets repository: https://huggingface.co/datasets/commaai/commavq
 
