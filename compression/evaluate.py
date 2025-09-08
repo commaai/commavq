@@ -3,7 +3,7 @@ import os
 import numpy as np
 from pathlib import Path
 import multiprocessing
-from datasets import load_dataset, DatasetDict
+from datasets import load_dataset
 
 archive_path = Path(os.environ.get('PACKED_ARCHIVE', './compression_challenge_submission.zip'))
 unpacked_archive = Path(os.environ.get('UNPACKED_ARCHIVE', './compression_challenge_submission_decompressed/'))
@@ -12,7 +12,7 @@ def compare(example):
   name = example['json']['file_name']
   tokens = np.load(unpacked_archive/name)
   gt_tokens = example['token.npy']
-  assert np.all(tokens == gt_tokens), f"decompressed data does not match original data for {path}"
+  assert np.all(tokens == gt_tokens), f"decompressed data does not match original data for {name}"
 
 if __name__ == '__main__':
   num_proc = multiprocessing.cpu_count()

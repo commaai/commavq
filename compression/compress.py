@@ -6,7 +6,7 @@ import shutil
 import numpy as np
 
 from pathlib import Path
-from datasets import load_dataset, DatasetDict
+from datasets import load_dataset
 
 HERE = Path(__file__).resolve().parent
 

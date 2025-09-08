@@ -20,7 +20,7 @@ def decompress_example(example):
     tokens = decompress_bytes(f.read())
   np.save(output_dir/name, tokens)
   gt_tokens = example['token.npy']
-  assert np.all(tokens == gt_tokens), f"decompressed data does not match original data for {path}"
+  assert np.all(tokens == gt_tokens), f"decompressed data does not match original data for {name}"
 
 if __name__ == '__main__':
   num_proc = multiprocessing.cpu_count()
