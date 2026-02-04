@@ -64,6 +64,21 @@ To evalute your submission, we will run:
    <td>
    </td>
    <td>
+    2.7
+   </td>
+   <td>
+    <a href="https://github.com/ylevental">
+     ylevental
+    </a>
+   </td>
+   <td>
+    arithmetic coding with GPT
+   </td>
+  </tr>
+  <tr>
+   <td>
+   </td>
+   <td>
     2.6
    </td>
    <td>
