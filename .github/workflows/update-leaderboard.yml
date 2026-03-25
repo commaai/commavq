@@ -27,7 +27,7 @@ jobs:
 
       - name: Extract table
         run: |
-          pup 'div#compression_challenge_table table' < page.html > table.html
+          pup 'div#commavq_compression_challenge_table table' < page.html > table.html
 
       - name: Splice HTML into both README files
         run: |
