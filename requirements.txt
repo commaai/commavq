@@ -1,7 +1,8 @@
 tqdm
 datasets==4.0.0
 torch
-opencv-python
+opencv-python-headless
 einops
+scikit-image
 pytest
 pytest-cov
