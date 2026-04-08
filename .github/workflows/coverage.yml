@@ -28,3 +28,12 @@ jobs:
       shell: pwsh
       run: |
         ./scripts/run_coverage.ps1
+
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-reports
+        path: |
+          tests/coverage_report_html/
+          tests/coverage.xml
