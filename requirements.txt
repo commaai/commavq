@@ -1,3 +1,7 @@
 tqdm
 datasets==4.0.0
-torch==2.2.2
+torch
+opencv-python
+einops
+pytest
+pytest-cov
