@@ -3,4 +3,4 @@
 
 # Using python -m pytest ensures the current directory is securely added to the python path
 $env:PYTHONPATH = ".;$env:PYTHONPATH"
-python -m pytest tests/test_compressor_config.py --cov=utils.vqvae --cov-report=term-missing --cov-report=html:tests/coverage_report_html --cov-report=xml:tests/coverage.xml
+python -m pytest tests/test_compressor_config.py tests/test_roundtrip_ssim.py -v --cov=utils.vqvae --cov-report=term-missing --cov-report=html:tests/coverage_report_html --cov-report=xml:tests/coverage.xml
