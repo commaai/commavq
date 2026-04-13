@@ -12,6 +12,11 @@ from utils.vqvae import (
 
 
 def make_tiny_config():
+  """
+  Creates a minimal CompressorConfig for testing purposes.
+  By scaling down dimensions like resolution, z_channels, and vocab_size,
+  the tests can run extremely quickly while verifying the architecture.
+  """
   return CompressorConfig(
     in_channels=3,
     out_channels=3,
@@ -27,6 +32,11 @@ def make_tiny_config():
 
 
 def test_upsample_doubles_spatial_dimensions_and_runs_conv():
+  """
+  Verifies that the Upsample block correctly doubles the spatial dimensions 
+  (height and width) of the input tensor. By using predefined weights (1.0)
+  and zero bias, we can confidently assert the expected post-convolution matrix.
+  """
   upsample = Upsample(in_channels=1)
   upsample.conv.weight.data.fill_(1.0)
   if upsample.conv.bias is not None:
@@ -45,6 +55,12 @@ def test_upsample_doubles_spatial_dimensions_and_runs_conv():
 
 
 def test_vector_quantizer_encode_decode_and_embed_roundtrip():
+  """
+  Validates the full lifecycle of the VectorQuantizer. 
+  It sets up a mock embedding table manually and checks whether inputs 
+  are correctly assigned to the closest centroids (indices) and if they 
+  successfully reconstruct and fetch correct embeddings on the way out.
+  """
   quantizer = VectorQuantizer(num_embeddings=3, embedding_dim=2)
   with torch.no_grad():
     quantizer._embedding.weight.copy_(
@@ -87,6 +103,13 @@ def test_vector_quantizer_encode_decode_and_embed_roundtrip():
 
 
 def test_encoder_decoder_forward_with_tiny_config():
+  """
+  Tests an end-to-end forward pass matching an Encoder connected to a Decoder 
+  using randomly generated dummy image inputs. Checks that the encoded indices 
+  respect the defined vocabulary constraints, shape boundaries, and that the 
+  reconstructed output dimensions map faithfully to the original inputs while 
+  staying numerically sound (no NaNs).
+  """
   torch.manual_seed(0)
   config = make_tiny_config()
   encoder = Encoder(config)
@@ -111,6 +134,12 @@ def test_encoder_decoder_forward_with_tiny_config():
 
 
 def test_load_state_dict_from_url_delegates_to_torch_hub(monkeypatch):
+  """
+  Instead of hitting real URLs which would cause tests to fail without a network, 
+  this mocks out `torch.hub.load_state_dict_from_url` and verifies whether 
+  Encoder and Decoder delegate properly to load dict states using `weights_only=True` 
+  for security and memory mapping to `cpu`, effectively testing the integration.
+  """
   config = make_tiny_config()
   encoder = Encoder(config)
   decoder = Decoder(config)
