@@ -2,23 +2,18 @@ import torch
 
 from utils.vqvae import Downsample
 
-
-def test_downsample_even_input_reduces_spatial_dimensions():
+def test_downsample_even_input_reduces_spatial_dimensions(downsample):
     """
     Downsample should halve height and width for an even-sized input while
     preserving batch and channel dimensions.
     """
     torch.manual_seed(0)
-
-    down = Downsample(in_channels=16)
     x = torch.randn(2, 16, 8, 8)
-
-    out = down(x)
+    out = downsample(x)
 
     assert out.shape == (2, 16, 4, 4)
     assert out.dtype == x.dtype
     assert out.device == x.device
-
 
 def test_downsample_odd_input_uses_asymmetric_padding():
     """
