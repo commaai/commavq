@@ -9,13 +9,13 @@ from tqdm import tqdm
 
 from models.autoencoder import LatentAutoencoder
 from models.retrieval_gpt import RetrievalGPT
-from retriever import HNSWRetriever
+from retriever import ExactRetriever
 
 # Hyperparameters
 VOCAB_SIZE = 1024
 CHUNK_SIZE = 1024
 LATENT_DIM = 64
-EMBED_DIM = 128
+EMBED_DIM = 256
 EPOCHS = 1
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -78,7 +78,7 @@ def run_ci_smoke_test():
     
     optimizer_ae = optim.Adam(autoencoder.parameters(), lr=1e-3)
     optimizer_gpt = optim.Adam(gpt.parameters(), lr=1e-3)
-    retriever = HNSWRetriever(dim=LATENT_DIM)
+    retriever = ExactRetriever(dim=LATENT_DIM)
     
     # Dummy data
     dummy_chunk = np.random.randint(0, VOCAB_SIZE, size=(CHUNK_SIZE,))

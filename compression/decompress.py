@@ -13,13 +13,13 @@ except ImportError:
     
 from models.autoencoder import LatentAutoencoder
 from models.retrieval_gpt import RetrievalGPT
-from retriever import HNSWRetriever
+from retriever import ExactRetriever
 
 # Constants (must match compress.py)
 VOCAB_SIZE = 1024
 CHUNK_SIZE = 1024
 LATENT_DIM = 64
-EMBED_DIM = 128
+EMBED_DIM = 256
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -113,7 +113,7 @@ if __name__ == '__main__':
     autoencoder.eval()
     gpt.eval()
     
-    retriever = HNSWRetriever(dim=LATENT_DIM)
+    retriever = ExactRetriever(dim=LATENT_DIM)
     
     # In evaluate.py, this script reconstructs token.npy exactly
     print("Decompressor initialized. (Note: autoregressive arithmetic decoding is slow!)")

@@ -18,7 +18,7 @@ except ImportError:
 
 from models.autoencoder import LatentAutoencoder
 from models.retrieval_gpt import RetrievalGPT
-from retriever import HNSWRetriever
+from retriever import ExactRetriever
 
 HERE = Path(__file__).resolve().parent
 output_dir = HERE / './compression_challenge_submission/'
@@ -26,7 +26,7 @@ output_dir = HERE / './compression_challenge_submission/'
 VOCAB_SIZE = 1024
 CHUNK_SIZE = 1024
 LATENT_DIM = 64
-EMBED_DIM = 128
+EMBED_DIM = 256
 
 # Device configuration
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -123,10 +123,9 @@ if __name__ == '__main__':
     autoencoder.eval()
     gpt.eval()
     
-    # Because HNSW index maintains state, we cannot easily multiprocess the RAG prediction.
-    # We will process a small subset sequentially to demonstrate the pipeline.
+    # Because Exact Retriever maintains state sequentially
     subset = ds['train'].select(range(min(10, len(ds['train']))))
-    retriever = HNSWRetriever(dim=LATENT_DIM)
+    retriever = ExactRetriever(dim=LATENT_DIM)
     
     print("Compressing examples...")
     for i in tqdm(range(len(subset))):

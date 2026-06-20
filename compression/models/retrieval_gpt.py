@@ -19,6 +19,7 @@ class RetrievalGPT(nn.Module):
     """
     Predictive GPT model that implements Retrieval-Augmented Generation (CLaRa).
     Takes a sequence of tokens and prepended retrieved latents (as context).
+    Scaled to 10-20M parameters to minimize decompression payload size.
     """
     def __init__(self, vocab_size=1024, embed_dim=256, num_layers=4, num_heads=8, latent_dim=64):
         super().__init__()
@@ -28,7 +29,7 @@ class RetrievalGPT(nn.Module):
         # Project retrieved latent back into the embedding space
         self.latent_proj = nn.Linear(latent_dim, embed_dim)
         
-        encoder_layer = nn.TransformerEncoderLayer(d_model=embed_dim, nhead=num_heads, batch_first=True)
+        encoder_layer = nn.TransformerEncoderLayer(d_model=embed_dim, nhead=num_heads, dim_feedforward=1024, batch_first=True)
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
         
         self.lm_head = nn.Linear(embed_dim, vocab_size)
@@ -51,7 +52,7 @@ class RetrievalGPT(nn.Module):
         
         out = self.transformer(emb, mask=mask, is_causal=True)
         
-        # Extract outputs corresponding to x (ignore the prepended latents outputs)
+        # Extract outputs corresponding to x
         if retrieved_z is not None:
             K = retrieved_z.size(1)
             out = out[:, K:, :]

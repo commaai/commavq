@@ -1,18 +1,14 @@
 import numpy as np
-import hnswlib
 
-class HNSWRetriever:
+class ExactRetriever:
     """
-    Game-Theoretic Latent Search Index using HNSW.
-    Indexes compressed latent representations and retrieves nearest neighbors.
-    Maintains causality by only adding elements *after* they are processed.
+    Deterministic Exact Nearest Neighbor Search Index.
+    Replaces HNSW to guarantee identical results during compression and decompression,
+    avoiding the fatal non-determinism trap for Arithmetic Coding.
     """
-    def __init__(self, dim=64, max_elements=100000):
+    def __init__(self, dim=64):
         self.dim = dim
-        self.max_elements = max_elements
-        # Space can be 'l2', 'ip', or 'cosine'
-        self.index = hnswlib.Index(space='l2', dim=dim)
-        self.index.init_index(max_elements=max_elements, ef_construction=200, M=16)
+        self.latents = []
         self.num_elements = 0
         
     def add(self, latents: np.ndarray):
@@ -20,33 +16,44 @@ class HNSWRetriever:
         Add batch of latents to the index.
         latents: [N, dim]
         """
-        if self.num_elements + latents.shape[0] > self.max_elements:
-            # For simplicity in this challenge, we could resize the index,
-            # but let's just ignore or handle it (hnswlib doesn't auto-resize in Python).
-            # We'll re-init a larger one if needed, but for 5000 mins chunked by 1024,
-            # total chunks = (5000 * 1200 * 128) / 1024 ~ 750,000.
-            pass
-            
-        labels = np.arange(self.num_elements, self.num_elements + latents.shape[0])
-        self.index.add_items(latents, labels)
+        self.latents.append(latents)
         self.num_elements += latents.shape[0]
         
-    def search(self, query: np.ndarray, k=2):
+    def search(self, query: np.ndarray, k=1):
         """
-        Search for k nearest neighbors.
+        Search for k nearest neighbors using Exact L2 Distance.
         query: [N, dim]
         Returns: labels [N, k], distances [N, k]
         """
         if self.num_elements == 0:
             return None, None
             
-        # We can't return more elements than what we have
         k = min(k, self.num_elements)
-        labels, distances = self.index.knn_query(query, k=k)
-        return labels, distances
+        
+        # Concatenate all stored latents
+        database = np.concatenate(self.latents, axis=0) # [Total_N, dim]
+        
+        # Calculate Exact L2 distance
+        # dist = (q - db)^2 = q^2 + db^2 - 2*q*db
+        q_sq = np.sum(query**2, axis=1, keepdims=True)
+        db_sq = np.sum(database**2, axis=1)
+        dot = np.dot(query, database.T)
+        
+        distances = q_sq + db_sq - 2 * dot
+        
+        # Find indices of top-k smallest distances
+        # Using np.argsort for determinism
+        sorted_indices = np.argsort(distances, axis=1)
+        top_k_indices = sorted_indices[:, :k]
+        
+        top_k_distances = np.take_along_axis(distances, top_k_indices, axis=1)
+        
+        return top_k_indices, top_k_distances
         
     def get_items(self, labels: np.ndarray):
         """
         Retrieve actual latent vectors by their labels.
+        labels: 1D array of indices
         """
-        return np.array(self.index.get_items(labels))
+        database = np.concatenate(self.latents, axis=0)
+        return database[labels]
