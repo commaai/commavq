@@ -1,0 +1,6 @@
+torch>=2.0.0
+numpy
+datasets
+hnswlib
+torchac
+tqdm
