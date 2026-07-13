@@ -49,6 +49,21 @@ To evalute your submission, we will run:
    <td>
    </td>
    <td>
+    3.7
+   </td>
+   <td>
+    <a href="https://github.com/mune-io">
+     mune-io
+    </a>
+   </td>
+   <td>
+    arithmetic coding with commavq-gpt2m
+   </td>
+  </tr>
+  <tr>
+   <td>
+   </td>
+   <td>
     3.4
    </td>
    <td>
