@@ -32,10 +32,22 @@ commaVQ contains:
 ## Lossless compression challenge: make me smaller! $500 challenge
 Losslessly compress 5,000 minutes of driving video "tokens". Go to [./compression/](./compression/) to start
 
-**Prize: highest compression rate on 5,000 minutes of driving video (~915MB) - Challenge ended July, 1st 2024 11:59pm AOE**
-
 Submit a single zip file containing the compressed data and a python script to decompress it into its original form using [this form](https://forms.gle/US88Hg7UR6bBuW3BA). Top solutions are listed on [comma's official leaderboard](https://comma.ai/leaderboard).
 
+## coding agents and LLMs policy
+If you're attempting this challenge, you are probably doing it for fun or for applying for a job at comma, hopefully both. If you're not writing and reading most of the code you are submitting, then what's the point?!
+This policy is mostly inspired by [rust's LLMs usage policy](https://forge.rust-lang.org/policies/llm-usage.html)
+Any violation of this policy will result in a closed PR, repeated violations will result in a ban.
+
+**allowed uses**
+- write, refine, check, suggest, review parts of the code
+- document, organize, answer questions, analyze information for personal and internal use
+
+**banned uses**
+- write all of the code
+- write PR description and public facing comments
+
+**CLAIMED** ~~**Prize: highest compression rate on 5,000 minutes of driving video (~915MB) - Challenge ended July, 1st 2024 11:59pm AOE**~~
 <!-- TABLE-START -->
 <table class="ranked">
  <thead>
