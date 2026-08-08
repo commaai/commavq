@@ -49,6 +49,21 @@ To evalute your submission, we will run:
    <td>
    </td>
    <td>
+    4.0
+   </td>
+   <td>
+    <a href="https://github.com/JPL11">
+     JPL11
+    </a>
+   </td>
+   <td>
+    arithmetic coding with commavq-gpt2m
+   </td>
+  </tr>
+  <tr>
+   <td>
+   </td>
+   <td>
     3.7
    </td>
    <td>
@@ -99,6 +114,21 @@ To evalute your submission, we will run:
    <td>
     <a href="https://github.com/BradyWynn">
      BradyWynn
+    </a>
+   </td>
+   <td>
+    arithmetic coding with GPT
+   </td>
+  </tr>
+  <tr>
+   <td>
+   </td>
+   <td>
+    2.8
+   </td>
+   <td>
+    <a href="https://github.com/adelkordi42-png">
+     adelkordi42-png
     </a>
    </td>
    <td>
